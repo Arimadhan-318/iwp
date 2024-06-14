@@ -1,0 +1,68 @@
+form.html
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Login Form</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <h1>Login</h1>
+        <form action="loginProcess.jsp" method="post">
+            <label for="username">Username:</label>
+            <input type="text" name="username" id="username"><br>
+            <label for="password">Password:</label>
+            <input type="password" name="password" id="password"><br>
+            <input type="submit" value="Login">
+        </form>
+    </body>
+</html>
+
+
+//loginProcess.jsp
+
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page import="java.io.IOException"%>
+<%
+    String username = request.getParameter("username");
+    String password = request.getParameter("password");
+
+    // Dummy credentials for demonstration purposes
+    String correctUsername = "user";
+    String correctPassword = "pass";
+
+    if (username != null && password != null) {
+        if (username.equals(correctUsername) && password.equals(correctPassword)) {
+            request.setAttribute("loginStatus", "success");
+        } else {
+            request.setAttribute("loginStatus", "failure");
+        }
+        request.getRequestDispatcher("loginDisplay.jsp").forward(request, response);
+    } else {
+        out.println("No input received. Please go back and enter your credentials.");
+    }
+%>
+
+//loginDisplay.jsp
+
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>Login Result</title>
+    </head>
+    <body>
+        <h1>Login Result</h1>
+        <%
+            String loginStatus = (String) request.getAttribute("loginStatus");
+            if ("success".equals(loginStatus)) {
+                out.print("Login successful. Welcome!");
+            } else if ("failure".equals(loginStatus)) {
+                out.print("Login failed. Invalid username or password.");
+            } else {
+                out.println("No login status to display.");
+            }
+        %>
+    </body>
+</html>

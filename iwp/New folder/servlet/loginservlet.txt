@@ -1,0 +1,91 @@
+//form.html
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login Form</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+    <h1>Login</h1>
+    <form action="login" method="post">
+        <label for="username">Username:</label>
+        <input type="text" name="username" id="username" required><br>
+        <label for="password">Password:</label>
+        <input type="password" name="password" id="password" required><br>
+        <input type="submit" value="Login">
+    </form>
+</body>
+</html>
+
+
+// login.java
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
+import java.io.IOException;
+
+@WebServlet("/login")
+public class LoginServlet extends HttpServlet {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String username = request.getParameter("username");
+        String password = request.getParameter("password");
+
+        // Dummy credentials for demonstration purposes
+        String correctUsername = "user";
+        String correctPassword = "pass";
+
+        if (username != null && password != null) {
+            if (username.equals(correctUsername) && password.equals(correctPassword)) {
+                request.setAttribute("loginStatus", "success");
+            } else {
+                request.setAttribute("loginStatus", "failure");
+            }
+            request.getRequestDispatcher("loginResult").forward(request, response);
+        } else {
+            response.getWriter().println("No input received. Please go back and enter your credentials.");
+        }
+    }
+}
+
+// loginResult.java
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
+import java.io.IOException;
+
+@WebServlet("/loginResult")
+public class LoginResultServlet extends HttpServlet {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String loginStatus = (String) request.getAttribute("loginStatus");
+
+        response.setContentType("text/html;charset=UTF-8");
+        response.getWriter().println("<!DOCTYPE html>");
+        response.getWriter().println("<html>");
+        response.getWriter().println("<head>");
+        response.getWriter().println("<title>Login Result</title>");
+        response.getWriter().println("</head>");
+        response.getWriter().println("<body>");
+        response.getWriter().println("<h1>Login Result</h1>");
+
+        if ("success".equals(loginStatus)) {
+            response.getWriter().println("Login successful. Welcome!");
+        } else if ("failure".equals(loginStatus)) {
+            response.getWriter().println("Login failed. Invalid username or password.");
+        } else {
+            response.getWriter().println("No login status to display.");
+        }
+
+        response.getWriter().println("</body>");
+        response.getWriter().println("</html>");
+    }
+}
